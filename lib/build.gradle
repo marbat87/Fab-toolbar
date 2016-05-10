@@ -1,4 +1,9 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'it.marbat.fabtoolbar.lib' // Change this to match your package name
+version = '1.0.0' // Change this to match your version number
 
 android {
     compileSdkVersion 23
@@ -22,4 +27,48 @@ dependencies {
     compile supportDependencies.appCompat
     compile(genericDependencies.CircularReveal)
     compile supportDependencies.design
+}
+
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+task generateJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath()
+            .join(File.pathSeparator))
+}
+
+task generateJavadocsJar(type: Jar) {
+    from generateJavadocs.destinationDir
+    classifier 'javadoc'
+}
+
+generateJavadocsJar.dependsOn generateJavadocs
+
+artifacts {
+    archives generateJavadocsJar
+    archives generateSourcesJar
+}
+
+bintray {
+    user = 'marbat87'
+    key = '151776ee00e86e62cda3351441ccac59e9c11243'
+    pkg {
+        repo = 'maven'
+        name = 'fab-toolbar' // the name of the package in BinTray
+
+        version {
+            name = 'lib' // the name of your library project
+            desc = 'This is the first version'
+            released  = new Date()
+            vcsTag = '1.0.0' // the version
+        }
+
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/marbat87/Fab-toolbar' // your GitHub repo
+        websiteUrl = 'https://github.com/marbat87/Fab-toolbar' // your website or whatever has documentation
+    }
+    configurations = ['archives']
 }
