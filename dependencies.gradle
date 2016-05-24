@@ -1,6 +1,6 @@
 ext {
     //Version
-    supportLibrary = '23.3.0'
+    supportLibrary = '23.4.0'
 
     //Support Libraries dependencies
     supportDependencies = [
@@ -16,11 +16,5 @@ ext {
     genericDependencies = [
             CircularReveal   :    "com.github.ozodrukh:CircularReveal:1.1.1@aar"
     ]
-
-    servicesLibrary = '8.4.0'
-
-    playServices = [
-            auth             :    "com.google.android.gms:play-services-auth:${servicesLibrary}",
-            drive             :    "com.google.android.gms:play-services-drive:${servicesLibrary}"
-    ]
+    
 }
