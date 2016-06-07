@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -41,7 +40,7 @@ public class FabToolbar extends RevealFrameLayout {
     private int animationDuration = DEFAULT_ANIMATION_DURATION;
     private View.OnClickListener clickListener;
     private boolean mVisible;
-//    private final Interpolator mInterpolator;
+    private final Rect mShadowPadding = new Rect();
 
     public FabToolbar(Context context) {
         super(context);
@@ -189,54 +188,6 @@ public class FabToolbar extends RevealFrameLayout {
         button.hide();
     }
 
-//    public void scrollUp(boolean animate) {
-//        this.toggle(true, animate, false);
-//    }
-//
-//    public void scrollDown(boolean animate) {
-//        this.toggle(false, animate, false);
-//    }
-//
-//    private void toggle(final boolean visible, final boolean animate, boolean force) {
-//        if(this.mVisible != visible || force) {
-//            this.mVisible = visible;
-//            int height = this.getHeight();
-//            if(height == 0 && !force) {
-//                ViewTreeObserver translationY = this.getViewTreeObserver();
-//                if(translationY.isAlive()) {
-//                    translationY.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//                        public boolean onPreDraw() {
-//                            ViewTreeObserver currentVto = FabToolbar.this.getViewTreeObserver();
-//                            if(currentVto.isAlive()) {
-//                                currentVto.removeOnPreDrawListener(this);
-//                            }
-//
-//                            FabToolbar.this.toggle(visible, animate, true);
-//                            return true;
-//                        }
-//                    });
-//                    return;
-//                }
-//            }
-//
-//            int translationY1 = visible?0:height + this.getMarginBottom();
-//            if(animate) {
-//                ViewPropertyAnimator.animate(this).setInterpolator(this.mInterpolator).setDuration(200L).translationY((float)translationY1);
-//            } else {
-//                ViewHelper.setTranslationY(this, (float) translationY1);
-//            }
-//
-////			if(!this.hasHoneycombApi()) {
-////				this.setClickable(visible);
-////			}
-//        }
-//
-//    }
-
-//	private boolean hasHoneycombApi() {
-//		return Build.VERSION.SDK_INT >= 11;
-//	}
-
     private int getMarginBottom() {
         int marginBottom = 0;
         ViewGroup.LayoutParams layoutParams = this.getLayoutParams();
@@ -316,150 +267,56 @@ public class FabToolbar extends RevealFrameLayout {
         @Override public void onAnimationRepeat() {}
     }
 
-//    public static class Behavior extends android.support.design.widget.CoordinatorLayout.Behavior<FabToolbar> {
-//        private static final boolean SNACKBAR_BEHAVIOR_ENABLED;
-//        private Rect mTmpRect;
-//        private boolean mIsAnimatingOut;
-//        private float mTranslationY;
-//
-//        public Behavior() {
-//        }
-//
-//        public boolean layoutDependsOn(CoordinatorLayout parent, FabToolbar child, View dependency) {
-//            return (SNACKBAR_BEHAVIOR_ENABLED && dependency instanceof Snackbar.SnackbarLayout)
-//                    || dependency instanceof AppBarLayout;
-//        }
-//
-//        public boolean onDependentViewChanged(CoordinatorLayout parent, FabToolbar child, View dependency) {
-////            Log.i(getClass().toString(), "ENTRO");
-//            if(dependency instanceof Snackbar.SnackbarLayout) {
-//                this.updateFabTranslationForSnackbar(parent, child, dependency);
-//            } else if(dependency instanceof AppBarLayout) {
-////                AppBarLayout appBarLayout = (AppBarLayout)dependency;
-//                if(this.mTmpRect == null) {
-//                    this.mTmpRect = new Rect();
-//                }
-////                Rect rect = this.mTmpRect;
-//                int rect_bottom = this.mTmpRect.bottom;
-////                Log.i(getClass().toString(), "this.mTmpRect prima: " + this.mTmpRect.bottom);
-////                Log.i(getClass().toString(), "rect.bottom prima: " + rect_bottom);
-//                ButtonGroupUtils.getDescendantRect(parent, dependency, this.mTmpRect);
-////                Log.i(getClass().toString(), "this.mTmpRect dopo: " + this.mTmpRect.bottom);
-////                Log.i(getClass().toString(), "rect.bottom dopo: " + rect_bottom);
-////                int topInset = this.mLastInsets != null?this.mLastInsets.getSystemWindowInsetTop():0;
-////                int topInset = 0;
-////                int result;
-////                int minHeight = ViewCompat.getMinimumHeight(appBarLayout);
-////                Log.i(getClass().toString(), "minHeight: " + minHeight);
-////                if(minHeight != 0) {
-////                    result = minHeight * 2 + topInset;
-////                } else {
-////                    int childCount = appBarLayout.getChildCount();
-////                    result = childCount >= 1?ViewCompat.getMinimumHeight(appBarLayout.getChildAt(childCount - 1)) * 2 + topInset:0;
-////                }
-////                if(rect.bottom <= appBarLayout.getMinimumHeightForVisibleOverlappingContent()) {
-////                    if(!this.mIsAnimatingOut && child.getVisibility() == VISIBLE) {
-////                        this.animateOut(child);
-////                    }
-////                } else if(child.getVisibility() != VISIBLE) {
-////                    this.animateIn(child);
-////                }
-//                if(rect_bottom > mTmpRect.bottom) {
-//                    if(child.isShowing())
-//                        child.scrollDown();
-//                }
-//                else
-//                if(!child.isShowing())
-//                    child.scrollUp();
-//            }
-//
-//            return false;
-//        }
-//
-//        private void updateFabTranslationForSnackbar(CoordinatorLayout parent, FabToolbar fab, View snackbar) {
-//            float translationY = this.getFabTranslationYForSnackbar(parent, fab);
-//            if(translationY != this.mTranslationY) {
-//                ViewCompat.animate(fab).cancel();
-//                if(Math.abs(translationY - this.mTranslationY) == (float)snackbar.getHeight()) {
-//                    ViewCompat.animate(fab).translationY(translationY).setInterpolator(new FastOutSlowInInterpolator()).setListener((ViewPropertyAnimatorListener)null);
-//                } else {
-//                    ViewCompat.setTranslationY(fab, translationY);
-//                }
-//
-//                this.mTranslationY = translationY;
-//            }
-//
-//        }
-//
-//        private float getFabTranslationYForSnackbar(CoordinatorLayout parent, FabToolbar fab) {
-//            float minOffset = 0.0F;
-//            List dependencies = parent.getDependencies(fab);
-//            int i = 0;
-//
-//            for(int z = dependencies.size(); i < z; ++i) {
-//                View view = (View)dependencies.get(i);
-//                if(view instanceof Snackbar.SnackbarLayout && parent.doViewsOverlap(fab, view)) {
-//                    minOffset = Math.min(minOffset, ViewCompat.getTranslationY(view) - (float)view.getHeight());
-//                }
-//            }
-//
-//            return minOffset;
-//        }
-//
-//        static {
-//            SNACKBAR_BEHAVIOR_ENABLED = Build.VERSION.SDK_INT >= 11;
-//        }
-//    }
-
     public static class Behavior extends android.support.design.widget.CoordinatorLayout.Behavior<FabToolbar> {
-        private static final boolean SNACKBAR_BEHAVIOR_ENABLED;
+        //        private static final boolean SNACKBAR_BEHAVIOR_ENABLED;
+        private static final boolean SNACKBAR_BEHAVIOR_ENABLED = Build.VERSION.SDK_INT >= 11;
         private Rect mTmpRect;
-        private float mTranslationY;
+//        private float mTranslationY;
+
+        private ValueAnimatorCompat mFabTranslationYAnimator;
+        private float mFabTranslationY;
 
         public Behavior() {
         }
 
-        public boolean onDependentViewChanged(CoordinatorLayout parent, FabToolbar child, View dependency) {
-            if(dependency instanceof Snackbar.SnackbarLayout) {
-//                this.updateFabTranslationForSnackbar(parent, child, dependency);
-                this.updateFabTranslationForSnackbar(parent, child);
-            } else if(dependency instanceof AppBarLayout) {
-                this.updateFabVisibility(parent, (AppBarLayout)dependency, child);
-            }
-
-            return false;
-        }
-
+        @Override
         public boolean layoutDependsOn(CoordinatorLayout parent, FabToolbar child, View dependency) {
             return (SNACKBAR_BEHAVIOR_ENABLED && dependency instanceof Snackbar.SnackbarLayout)
                     || dependency instanceof AppBarLayout;
         }
 
+        @Override
+        public boolean onDependentViewChanged(CoordinatorLayout parent, FabToolbar child, View dependency) {
+            if (dependency instanceof Snackbar.SnackbarLayout) {
+                updateFabTranslationForSnackbar(parent, child, dependency);
+            } else if (dependency instanceof AppBarLayout) {
+                // If we're depending on an AppBarLayout we will show/hide it automatically
+                // if the FAB is anchored to the AppBarLayout
+                updateFabVisibility(parent, (AppBarLayout) dependency, child);
+            }
+            return false;
+        }
+
+        @Override
         public void onDependentViewRemoved(CoordinatorLayout parent, FabToolbar child, View dependency) {
-            if(dependency instanceof Snackbar.SnackbarLayout) {
-                ViewCompat.animate(child).translationY(0.0F).setInterpolator(new FastOutSlowInInterpolator()).setListener(null);
+            if (dependency instanceof Snackbar.SnackbarLayout) {
+                updateFabTranslationForSnackbar(parent, child, dependency);
             }
         }
 
-        private void updateFabVisibility(CoordinatorLayout parent, AppBarLayout appBarLayout, FabToolbar child) {
-//            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)child.getLayoutParams();
-//            if(lp.getAnchorId() != appBarLayout.getId()) {
+        private boolean updateFabVisibility(CoordinatorLayout parent, AppBarLayout appBarLayout, FabToolbar child) {
+//            final CoordinatorLayout.LayoutParams lp =
+//                    (CoordinatorLayout.LayoutParams) child.getLayoutParams();
+//            if (lp.getAnchorId() != appBarLayout.getId()) {
+//                // The anchor ID doesn't match the dependency, so we won't automatically
+//                // show/hide the FAB
 //                return false;
-//            } else {
-//                if(this.mTmpRect == null) {
-//                    this.mTmpRect = new Rect();
-//                }
-//
-//                Rect rect = this.mTmpRect;
-//                ViewGroupUtils.getDescendantRect(parent, appBarLayout, rect);
-//                if(rect.bottom <= appBarLayout.getMinimumHeightForVisibleOverlappingContent()) {
-//                    child.hide();
-//                } else {
-//                    child.show();
-//                }
-//
-//                return true;
 //            }
+
+            if (child.getVisibility() == INVISIBLE || child.getVisibility() == GONE)
+                // The view isn't set to be visible so skip changing it's visibility
+                return false;
+
             if(this.mTmpRect == null) {
                 this.mTmpRect = new Rect();
             }
@@ -473,84 +330,122 @@ public class FabToolbar extends RevealFrameLayout {
                 if(child.isShowing())
                     child.scrollDown();
             }
-            else
-            if(!child.isShowing())
-                child.scrollUp();
-
-        }
-
-//        private void updateFabTranslationForSnackbar(CoordinatorLayout parent, FabToolbar fab, View snackbar) {
-        private void updateFabTranslationForSnackbar(CoordinatorLayout parent, FabToolbar fab) {
-//            if(fab.getVisibility() == 0) {
-            if(fab.isShowing()) {
-                float translationY = this.getFabTranslationYForSnackbar(parent, fab);
-                if(translationY != this.mTranslationY) {
-                    ViewCompat.animate(fab).cancel();
-                    ViewCompat.setTranslationY(fab, translationY);
-                    this.mTranslationY = translationY;
-                }
-
+            else {
+                if (!child.isShowing())
+                    child.scrollUp();
             }
+            return true;
         }
 
-        private float getFabTranslationYForSnackbar(CoordinatorLayout parent, FabToolbar fab) {
-            float minOffset = 0.0F;
-            List dependencies = parent.getDependencies(fab);
-            int i = 0;
+        private void updateFabTranslationForSnackbar(CoordinatorLayout parent,
+                                                     final FabToolbar fab, View snackbar) {
+            final float targetTransY = getFabTranslationYForSnackbar(parent, fab);
+            if (mFabTranslationY == targetTransY) {
+                // We're already at (or currently animating to) the target value, return...
+                return;
+            }
 
-            for(int z = dependencies.size(); i < z; ++i) {
-                View view = (View)dependencies.get(i);
-                if(view instanceof Snackbar.SnackbarLayout && parent.doViewsOverlap(fab, view)) {
-                    minOffset = Math.min(minOffset, ViewCompat.getTranslationY(view) - (float)view.getHeight());
+            final float currentTransY = ViewCompat.getTranslationY(fab);
+
+            // Make sure that any current animation is cancelled
+            if (mFabTranslationYAnimator != null && mFabTranslationYAnimator.isRunning()) {
+                mFabTranslationYAnimator.cancel();
+            }
+
+            if (fab.isShown()
+                    && Math.abs(currentTransY - targetTransY) > (fab.getHeight() * 0.667f)) {
+                // If the FAB will be travelling by more than 2/3 of it's height, let's animate
+                // it instead
+                if (mFabTranslationYAnimator == null) {
+                    mFabTranslationYAnimator = ViewUtils.createAnimator();
+                    mFabTranslationYAnimator.setInterpolator(
+                            AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+                    mFabTranslationYAnimator.setUpdateListener(
+                            new ValueAnimatorCompat.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimatorCompat animator) {
+                                    ViewCompat.setTranslationY(fab,
+                                            animator.getAnimatedFloatValue());
+                                }
+                            });
+                }
+                mFabTranslationYAnimator.setFloatValues(currentTransY, targetTransY);
+                mFabTranslationYAnimator.start();
+            } else {
+                // Now update the translation Y
+                ViewCompat.setTranslationY(fab, targetTransY);
+            }
+
+            mFabTranslationY = targetTransY;
+        }
+
+        private float getFabTranslationYForSnackbar(CoordinatorLayout parent,
+                                                    FabToolbar fab) {
+            float minOffset = 0;
+            final List<View> dependencies = parent.getDependencies(fab);
+            for (int i = 0, z = dependencies.size(); i < z; i++) {
+                final View view = dependencies.get(i);
+                if (view instanceof Snackbar.SnackbarLayout && parent.doViewsOverlap(fab, view)) {
+                    minOffset = Math.min(minOffset,
+                            ViewCompat.getTranslationY(view) - view.getHeight());
                 }
             }
 
             return minOffset;
         }
 
+//        @Override
 //        public boolean onLayoutChild(CoordinatorLayout parent, FabToolbar child, int layoutDirection) {
-//            List dependencies = parent.getDependencies(child);
-//            int i = 0;
-//
-//            for(int count = dependencies.size(); i < count; ++i) {
-//                View dependency = (View)dependencies.get(i);
-//                if(dependency instanceof AppBarLayout && this.updateFabVisibility(parent, (AppBarLayout)dependency, child)) {
+//            // First, lets make sure that the visibility of the FAB is consistent
+//            final List<View> dependencies = parent.getDependencies(child);
+//            for (int i = 0, count = dependencies.size(); i < count; i++) {
+//                final View dependency = dependencies.get(i);
+//                if (dependency instanceof AppBarLayout
+//                        && updateFabVisibility(parent, (AppBarLayout) dependency, child)) {
 //                    break;
 //                }
 //            }
-//
+//            // Now let the CoordinatorLayout lay out the FAB
 //            parent.onLayoutChild(child, layoutDirection);
-////            this.offsetIfNeeded(parent, child);
+//            // Now offset it if needed
+//            offsetIfNeeded(parent, child);
 //            return true;
 //        }
-
-//        private void offsetIfNeeded(CoordinatorLayout parent, FloatingActionButton fab) {
-//            Rect padding = fab.mShadowPadding;
-//            if(padding != null && padding.centerX() > 0 && padding.centerY() > 0) {
-//                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)fab.getLayoutParams();
-//                int offsetTB = 0;
-//                int offsetLR = 0;
-//                if(fab.getRight() >= parent.getWidth() - lp.rightMargin) {
+//
+//
+//        /**
+//         * Pre-Lollipop we use padding so that the shadow has enough space to be drawn. This method
+//         * offsets our layout position so that we're positioned correctly if we're on one of
+//         * our parent's edges.
+//         */
+//        private void offsetIfNeeded(CoordinatorLayout parent, FabToolbar fab) {
+//            final Rect padding = fab.mShadowPadding;
+//
+//            if (padding != null && padding.centerX() > 0 && padding.centerY() > 0) {
+//                final CoordinatorLayout.LayoutParams lp =
+//                        (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+//
+//                int offsetTB = 0, offsetLR = 0;
+//
+//                if (fab.getRight() >= parent.getWidth() - lp.rightMargin) {
+//                    // If we're on the left edge, shift it the right
 //                    offsetLR = padding.right;
-//                } else if(fab.getLeft() <= lp.leftMargin) {
+//                } else if (fab.getLeft() <= lp.leftMargin) {
+//                    // If we're on the left edge, shift it the left
 //                    offsetLR = -padding.left;
 //                }
-//
-//                if(fab.getBottom() >= parent.getBottom() - lp.bottomMargin) {
+//                if (fab.getBottom() >= parent.getBottom() - lp.bottomMargin) {
+//                    // If we're on the bottom edge, shift it down
 //                    offsetTB = padding.bottom;
-//                } else if(fab.getTop() <= lp.topMargin) {
+//                } else if (fab.getTop() <= lp.topMargin) {
+//                    // If we're on the top edge, shift it up
 //                    offsetTB = -padding.top;
 //                }
 //
 //                fab.offsetTopAndBottom(offsetTB);
 //                fab.offsetLeftAndRight(offsetLR);
 //            }
-//
 //        }
-
-        static {
-            SNACKBAR_BEHAVIOR_ENABLED = Build.VERSION.SDK_INT >= 11;
-        }
     }
 
     private static int shiftColorDown(int color) {

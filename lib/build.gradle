@@ -3,7 +3,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'it.marbat.fabtoolbar.lib' // Change this to match your package name
-version = '1.0.2' // Change this to match your version number
+version = '1.0.5' // Change this to match your version number
 
 android {
     compileSdkVersion 23
@@ -12,8 +12,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 6
+        versionName "1.0.5"
     }
     buildTypes {
         release {
@@ -61,9 +61,9 @@ bintray {
 
         version {
             name = 'lib' // the name of your library project
-            desc = 'Updated support libraries'
+            desc = 'Fix fab not hiding on scrolldown'
             released  = new Date()
-            vcsTag = '1.0.2' // the version
+            vcsTag = '1.0.5' // the version
         }
 
         licenses = ['MIT']
